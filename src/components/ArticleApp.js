@@ -1,7 +1,9 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 
 import {
   Flex,
+  Wrap,
+  WrapItem,
   Stack,
   Radio,
   RadioGroup,
@@ -16,7 +18,7 @@ import {
   Text,
   Button,
   ChakraProvider,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react"
 import {
   Paginator,
   Container,
@@ -24,59 +26,57 @@ import {
   usePaginator,
   Next,
   PageGroup,
-} from "chakra-paginator";
-
+} from "chakra-paginator"
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons"
 
 const ArticleList = ({ PostsData }) => {
-  const copyPostsData = [...PostsData];
-  const [articlesData, setArticlesData] = useState(PostsData);
-  const [articleTotal, setArticleTotal] = useState(
-    copyPostsData.length
-  );
-  const [show, setShow] = React.useState(false);
-  const [sort, setSort] = React.useState(false);
+  const copyPostsData = [...PostsData]
+  const [articlesData, setArticlesData] = useState(PostsData)
+  const [articleTotal, setArticleTotal] = useState(copyPostsData.length)
+  const [show, setShow] = React.useState(false)
+  const [sort, setSort] = React.useState(false)
   const range = (start, stop, step) =>
     Array.from(
       { length: (stop - start) / step + 1 },
       (_, i) => start + i * step
-    );
-  const [startYear, setStartYear] = useState(2019);
-  const [years, setYears] = useState(range(startYear, 2022, 1).reverse());
+    )
+  const [startYear, setStartYear] = useState(2020)
+  const [years, setYears] = useState(range(startYear, 2022, 1).reverse())
 
-  const [currentYear, setCurrentYear] = useState();
-  const [currentType, setCurrentType] = useState();
-  const [currentPublisher, setCurrentPublisher] = useState();
-  const articleTypes = copyPostsData.map(
-    (article) => article["Publication_Type"]
-  );
+  const [currentYear, setCurrentYear] = useState()
+  const [currentType, setCurrentType] = useState()
+  const [currentPublisher, setCurrentPublisher] = useState()
+  const articleTypes = copyPostsData.map(article => article["Publication_Type"])
   const articleTypesUnique = articleTypes.filter((element, index) => {
-    return articleTypes.indexOf(element) === index;
-  });
-  
-  const articlePublisher = copyPostsData.map((article) => article["Publisher"]);
-  const articlePublisherAbstarct = articlePublisher.filter((item) => {
+    return articleTypes.indexOf(element) === index
+  })
+
+  const articlePublisher = copyPostsData.map(article => article["Publisher"])
+  const articlePublisherAbstarct = articlePublisher.filter(item => {
     if (item !== undefined && item.length < 25) {
-      return item;
+      return item
     }
-  });
+  })
   const articlePublisherUnique = articlePublisherAbstarct.filter(
     (element, index) => {
-      return articlePublisher.indexOf(element) === index;
+      return articlePublisher.indexOf(element) === index
     }
-  );
+  )
 
   const handleToggle = () => {
-    setStartYear(startYear - 1);
-    setYears(range(startYear, 2022, 1).reverse());
-    setShow(!show);
-    if (startYear === 2000) {
-      setShow(!show);
+    if (!show) {
+      setShow(!show)
+      setYears(range(startYear, 2022, 1).reverse())
+      setStartYear(startYear - 1)
     }
-  };
+    else {
+      setShow(!show)
+    }
+  }
 
   // constants
-  const outerLimit = 2;
-  const innerLimit = 2;
+  const outerLimit = 1
+  const innerLimit = 1
   const {
     isDisabled,
     pagesQuantity,
@@ -93,11 +93,11 @@ const ArticleList = ({ PostsData }) => {
       currentPage: 1,
       isDisabled: false,
     },
-  });
+  })
 
   // effects
   useEffect(() => {
-    let allArticlesData;
+    let allArticlesData
     // 1- Filtered By Year
     if (
       currentYear !== undefined &&
@@ -105,9 +105,9 @@ const ArticleList = ({ PostsData }) => {
       currentPublisher === undefined
     ) {
       allArticlesData = copyPostsData.filter(
-        (article) => article["Publication_Year"] === Number(currentYear)
-      );
-      setArticleTotal(allArticlesData.length);
+        article => article["Publication_Year"] === Number(currentYear)
+      )
+      setArticleTotal(allArticlesData.length)
       //2- Filtered By Year and Type
     } else if (
       currentYear !== undefined &&
@@ -115,11 +115,11 @@ const ArticleList = ({ PostsData }) => {
       currentPublisher === undefined
     ) {
       allArticlesData = copyPostsData.filter(
-        (article) =>
+        article =>
           article["Publication_Year"] === Number(currentYear) &&
           article["Publication_Type"] === currentType
-      );
-      setArticleTotal(allArticlesData.length);
+      )
+      setArticleTotal(allArticlesData.length)
       //3- Filtered By Year and Type and Publisher
     } else if (
       currentYear !== undefined &&
@@ -127,12 +127,12 @@ const ArticleList = ({ PostsData }) => {
       currentPublisher !== undefined
     ) {
       allArticlesData = copyPostsData.filter(
-        (article) =>
+        article =>
           article["Publication_Year"] === Number(currentYear) &&
           article["Publication_Type"] === currentType &&
           article["Publisher"] === currentPublisher
-      );
-      setArticleTotal(allArticlesData.length);
+      )
+      setArticleTotal(allArticlesData.length)
       //4- Filtered By Type
     } else if (
       currentYear === undefined &&
@@ -140,9 +140,9 @@ const ArticleList = ({ PostsData }) => {
       currentPublisher === undefined
     ) {
       allArticlesData = copyPostsData.filter(
-        (article) => article["Publication_Type"] === currentType
-      );
-      setArticleTotal(allArticlesData.length);
+        article => article["Publication_Type"] === currentType
+      )
+      setArticleTotal(allArticlesData.length)
       //5- Filtered By Type and Publisher
     } else if (
       currentYear === undefined &&
@@ -150,11 +150,11 @@ const ArticleList = ({ PostsData }) => {
       currentPublisher !== undefined
     ) {
       allArticlesData = copyPostsData.filter(
-        (article) =>
+        article =>
           article["Publication_Type"] === currentType &&
           article["Publisher"] === currentPublisher
-      );
-      setArticleTotal(allArticlesData.length);
+      )
+      setArticleTotal(allArticlesData.length)
       //6- Filtered By Year and Publisher
     } else if (
       currentYear !== undefined &&
@@ -162,11 +162,11 @@ const ArticleList = ({ PostsData }) => {
       currentPublisher !== undefined
     ) {
       allArticlesData = copyPostsData.filter(
-        (article) =>
+        article =>
           article["Publication_Year"] === Number(currentYear) &&
           article["Publisher"] === currentPublisher
-      );
-      setArticleTotal(allArticlesData.length);
+      )
+      setArticleTotal(allArticlesData.length)
       //7- Filtered By Publisher
     } else if (
       currentYear === undefined &&
@@ -174,32 +174,32 @@ const ArticleList = ({ PostsData }) => {
       currentPublisher !== undefined
     ) {
       allArticlesData = copyPostsData.filter(
-        (article) => article["Publisher"] === currentPublisher
-      );
-      setArticleTotal(allArticlesData.length);
+        article => article["Publisher"] === currentPublisher
+      )
+      setArticleTotal(allArticlesData.length)
       //8- No Filter
     } else {
-      allArticlesData = [...copyPostsData];
+      allArticlesData = [...copyPostsData]
     }
 
     if (sort) {
-      const beforeSort = [...allArticlesData];
+      const beforeSort = [...allArticlesData]
       const sortedArticle = beforeSort.sort(
         (a, b) =>
           parseFloat(b["Publication_Year"]) - parseFloat(a["Publication_Year"])
-      );
-      allArticlesData = [...sortedArticle];
-      console.log("sort", sort);
+      )
+      allArticlesData = [...sortedArticle]
+      console.log("sort", sort)
     }
 
     const articlesInPagination = allArticlesData.slice(
       (currentPage - 1) * pageSize,
       currentPage * pageSize
-    );
-    setArticlesData(articlesInPagination);
+    )
+    setArticlesData(articlesInPagination)
 
-    console.log("All Artciles In Page", articlesInPagination);
-    console.log("Artciles Data", articlesData);
+    console.log("All Artciles In Page", articlesInPagination)
+    console.log("Artciles Data", articlesData)
   }, [
     currentPage,
     pageSize,
@@ -208,13 +208,13 @@ const ArticleList = ({ PostsData }) => {
     currentType,
     currentPublisher,
     sort,
-  ]);
+  ])
 
   // styles
-  const baseStyles= {
+  const baseStyles = {
     w: 7,
     fontSize: "sm",
-  };
+  }
 
   const normalStyles = {
     ...baseStyles,
@@ -222,7 +222,7 @@ const ArticleList = ({ PostsData }) => {
       bg: "green.300",
     },
     bg: "red.300",
-  };
+  }
 
   const activeStyles = {
     ...baseStyles,
@@ -230,47 +230,47 @@ const ArticleList = ({ PostsData }) => {
       bg: "blue.300",
     },
     bg: "green.300",
-  };
+  }
 
   const separatorStyles = {
     w: 7,
     bg: "green.200",
-  };
+  }
 
   // handlers
 
-  const handlePageChange = (nextPage) => {
+  const handlePageChange = nextPage => {
     // -> request new data using the page number
-    setCurrentPage(nextPage);
-  };
+    setCurrentPage(nextPage)
+  }
 
-  const handlePageSizeChange = (event) => {
-    const pageSize = Number(event.target.value);
+  const handlePageSizeChange = event => {
+    const pageSize = Number(event.target.value)
 
-    setPageSize(pageSize);
-  };
+    setPageSize(pageSize)
+  }
 
   const handleDisableClick = () => {
-    return setIsDisabled((oldState) => !oldState);
-  };
+    return setIsDisabled(oldState => !oldState)
+  }
 
   const clearFilterYear = () => {
-    setCurrentYear(undefined);
-    setArticleTotal(copyPostsData.length);
-  };
+    setCurrentYear(undefined)
+    setArticleTotal(copyPostsData.length)
+  }
 
   const clearFilterType = () => {
-    setCurrentType(undefined);
-    setArticleTotal(copyPostsData.length);
-  };
+    setCurrentType(undefined)
+    setArticleTotal(copyPostsData.length)
+  }
 
   const clearFilterPublisher = () => {
-    setCurrentPublisher(undefined);
-    setArticleTotal(copyPostsData.length);
-  };
+    setCurrentPublisher(undefined)
+    setArticleTotal(copyPostsData.length)
+  }
   const sortByDate = () => {
-    setSort(!sort);
-  };
+    setSort(!sort)
+  }
   return (
     <ChakraProvider>
       <Flex justifyContent="space-between" mt={7}>
@@ -282,115 +282,120 @@ const ArticleList = ({ PostsData }) => {
       </Flex>
       <Grid templateColumns="repeat(5, 1fr)" gap={4}>
         <GridItem colSpan={[5, null, null, 1]}>
-          <Box>
-            <Heading as="h4" textAlign="left" fontSize="small" mt={10}>
-              Refine By
-            </Heading>
-
-            <Heading
-              as="h5"
-              textAlign="left"
-              fontSize="small"
-              mt={5}
-              color="green.700"
-            >
-              Years
-              {currentYear !== undefined && (
-                <Button variant={"link"} onClick={clearFilterYear} ml={5}>
-                  Clear Filter
-                </Button>
-              )}
-              <>
-                <Collapse startingHeight={65} in={show}>
-                  <RadioGroup
-                    defaultValue={undefined}
-                    mt={3}
-                    colorScheme="cyan"
-                    onChange={setCurrentYear}
-                    value={currentYear}
-                  >
-                    <Stack spacing={4}>
-                      {years.map((year) => (
-                        <Radio value={year} key={year}>
-                          {year}
-                        </Radio>
-                      ))}
-                    </Stack>
-                  </RadioGroup>
-                </Collapse>
-                <Button size="sm" onClick={handleToggle} mt="1rem">
-                  Show {show ? "Less" : "More"}
-                </Button>
-              </>
-            </Heading>
-
-            <Heading
-              as="h5"
-              textAlign="left"
-              fontSize="small"
-              mt={8}
-              color="green.700"
-            >
-              Publication Type
-              {currentType !== undefined && (
-                <Button variant={"link"} onClick={clearFilterType} ml={5}>
-                  Clear Filter
-                </Button>
-              )}
-              <RadioGroup
-                defaultValue={undefined}
-                mt={3}
-                colorScheme="cyan"
-                onChange={setCurrentType}
-                value={currentType}
+          <Heading as="h4" textAlign="left" fontSize="small" mt={10} mb={4}>
+            Refine By
+          </Heading>
+          <Wrap spacing='30px'>
+            <WrapItem width={{lg:"250px"}}>
+              <Heading
+                as="h5"
+                textAlign="left"
+                fontSize="small"
+                color="green.700"
               >
-                <Stack spacing={4}>
-                  {articleTypesUnique.map((articleType) => (
-                    <Radio value={articleType} key={articleType}>
-                      {articleType}
-                    </Radio>
-                  ))}
-                </Stack>
-              </RadioGroup>
-            </Heading>
-            <Heading
-              as="h5"
-              textAlign="left"
-              fontSize="small"
-              mt={8}
-              color="green.700"
-            >
-              Publisher
-              {currentPublisher !== undefined && (
-                <Button variant={"link"} onClick={clearFilterPublisher} ml={5}>
-                  Clear Filter
-                </Button>
-              )}
-              <RadioGroup
-                defaultValue={undefined}
-                mt={3}
-                colorScheme="cyan"
-                onChange={setCurrentPublisher}
-                value={currentPublisher}
-              >
-                <Stack spacing={4}>
-                  {articlePublisherUnique.map((articlePublisher) => (
-                    <Radio
-                      value={articlePublisher}
-                      key={articlePublisher}
-                      isChecked
+                Years
+                {currentYear !== undefined && (
+                  <Button variant={"link"} onClick={clearFilterYear} ml={5}>
+                    Clear Filter
+                  </Button>
+                )}
+                <>
+                  <Collapse startingHeight={65} in={show}>
+                    <RadioGroup
+                      defaultValue={undefined}
+                      mt={3}
+                      colorScheme="cyan"
+                      onChange={setCurrentYear}
+                      value={currentYear}
                     >
-                      {articlePublisher}
-                    </Radio>
-                  ))}
-                </Stack>
-              </RadioGroup>
-            </Heading>
-          </Box>
+                      <Stack spacing={4}>
+                        {years.map(year => (
+                          <Radio value={year} key={year}>
+                            {year}
+                          </Radio>
+                        ))}
+                      </Stack>
+                    </RadioGroup>
+                  </Collapse>
+                  <Button size="sm" onClick={handleToggle} mt="1rem">
+                    Show {show ? "Less" : "More"}
+                  </Button>
+                </>
+              </Heading>
+            </WrapItem>
+            <WrapItem width={{lg:"250px"}}>
+              <Heading
+                as="h5"
+                textAlign="left"
+                fontSize="small"
+                color="green.700"
+              >
+                Publication Type
+                {currentType !== undefined && (
+                  <Button variant={"link"} onClick={clearFilterType} ml={5}>
+                    Clear Filter
+                  </Button>
+                )}
+                <RadioGroup
+                  defaultValue={undefined}
+                  mt={3}
+                  colorScheme="cyan"
+                  onChange={setCurrentType}
+                  value={currentType}
+                >
+                  <Stack spacing={4}>
+                    {articleTypesUnique.map(articleType => (
+                      <Radio value={articleType} key={articleType}>
+                        {articleType}
+                      </Radio>
+                    ))}
+                  </Stack>
+                </RadioGroup>
+              </Heading>
+            </WrapItem>
+            <WrapItem width={{lg:"250px"}}>
+              <Heading
+                as="h5"
+                textAlign="left"
+                fontSize="small"
+                color="green.700"
+              >
+                Publisher
+                {currentPublisher !== undefined && (
+                  <Button
+                    variant={"link"}
+                    onClick={clearFilterPublisher}
+                    ml={5}
+                  >
+                    Clear Filter
+                  </Button>
+                )}
+                <RadioGroup
+                  defaultValue={undefined}
+                  mt={3}
+                  colorScheme="cyan"
+                  onChange={setCurrentPublisher}
+                  value={currentPublisher}
+                >
+                  <Stack spacing={4}>
+                    {articlePublisherUnique.map(articlePublisher => (
+                      <Radio
+                        value={articlePublisher}
+                        key={articlePublisher}
+                        isChecked
+                      >
+                        {articlePublisher}
+                      </Radio>
+                    ))}
+                  </Stack>
+                </RadioGroup>
+              </Heading>
+            </WrapItem>
+          </Wrap>
         </GridItem>
         <GridItem colSpan={[5, null, null, 4]}>
-          <Box dir="ltr">
-            {articlesData.map((post) => (
+          <Box>
+            {articlesData.map(post => (
               <Box
                 marginTop={{ base: "1", sm: "5" }}
                 display="flex"
@@ -400,11 +405,9 @@ const ArticleList = ({ PostsData }) => {
               >
                 <Box
                   display="flex"
-                  flex="1"
                   flexDirection="column"
                   justifyContent="center"
                   marginTop={{ base: "3", sm: "0" }}
-                  width="600px"
                 >
                   <Heading
                     marginTop="1"
@@ -459,12 +462,12 @@ const ArticleList = ({ PostsData }) => {
             >
               <Container align="center" justify="space-between" w="full" p={4}>
                 <Previous>
-                  Previous
+                  <ChevronLeftIcon />
                   {/* Or an icon from `react-icons` */}
                 </Previous>
                 <PageGroup isInline align="center" />
                 <Next>
-                  Next
+                  <ChevronRightIcon />
                   {/* Or an icon from `react-icons` */}
                 </Next>
               </Container>
@@ -483,7 +486,7 @@ const ArticleList = ({ PostsData }) => {
         </GridItem>
       </Grid>
     </ChakraProvider>
-  );
-};
+  )
+}
 
-export default ArticleList;
+export default ArticleList
