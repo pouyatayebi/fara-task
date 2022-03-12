@@ -4,7 +4,7 @@ import { Link } from "gatsby"
 import { Box,Heading } from  "@chakra-ui/react"
 
 const Header = ({ siteTitle }) => (
-  <Box bg="brand.900" p={9}>
+  <Box bg="brand.700" p={9}>
     <Heading as="h1" textAlign="center" color="white">
     { siteTitle }
     </Heading>

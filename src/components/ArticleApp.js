@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState } from "react"
 
 import {
   Flex,
@@ -45,7 +45,6 @@ const ArticleList = ({ PostsData }) => {
 
   const [currentYear, setCurrentYear] = useState()
   const [currentType, setCurrentType] = useState()
-  const [isTypeChecked, setIsTypeCheched] = useState()
   const [currentPublisher, setCurrentPublisher] = useState()
   const articleTypes = copyPostsData.map(article => article["Publication_Type"])
   const articleTypesUnique = articleTypes.filter((element, index) => {
@@ -64,8 +63,16 @@ const ArticleList = ({ PostsData }) => {
     }
   )
 
-  const radioTypeRef = useRef([])
-  const [radioTypechecked, setRadioTypechecked] = useState(false)
+  const handleToggle = () => {
+    if (!show) {
+      setShow(!show)
+      setYears(range(startYear, 2022, 1).reverse())
+      setStartYear(startYear - 1)
+    }
+    else {
+      setShow(!show)
+    }
+  }
 
   // constants
   const outerLimit = 1
@@ -231,20 +238,6 @@ const ArticleList = ({ PostsData }) => {
   }
 
   // handlers
-  const handleToggle = () => {
-    if (!show) {
-      setShow(!show)
-      setYears(range(startYear, 2022, 1).reverse())
-      setStartYear(startYear - 1)
-    } else {
-      setShow(!show)
-    }
-  }
-
-  const onChangeType = value => {
-    setCurrentType(value)
-    setIsTypeCheched(true)
-  }
 
   const handlePageChange = nextPage => {
     // -> request new data using the page number
@@ -264,19 +257,11 @@ const ArticleList = ({ PostsData }) => {
   const clearFilterYear = () => {
     setCurrentYear(undefined)
     setArticleTotal(copyPostsData.length)
-    console.log("clear currentYear", currentYear)
   }
 
   const clearFilterType = () => {
     setCurrentType(undefined)
     setArticleTotal(copyPostsData.length)
-    radioTypeRef.current.forEach(item => {
-      item.style.color = "red"
-      item.style.background = "red!important"
-      console.log("radio item", item)
-    })
-
-    console.log("current ref", radioTypeRef.current)
   }
 
   const clearFilterPublisher = () => {
@@ -300,8 +285,8 @@ const ArticleList = ({ PostsData }) => {
           <Heading as="h4" textAlign="left" fontSize="small" mt={10} mb={4}>
             Refine By
           </Heading>
-          <Wrap spacing="30px">
-            <WrapItem width={{ lg: "250px" }}>
+          <Wrap spacing='30px'>
+            <WrapItem width={{lg:"250px"}}>
               <Heading
                 as="h5"
                 textAlign="left"
@@ -322,16 +307,10 @@ const ArticleList = ({ PostsData }) => {
                       colorScheme="cyan"
                       onChange={setCurrentYear}
                       value={currentYear}
-                      ml={2}
                     >
                       <Stack spacing={4}>
                         {years.map(year => (
-                          <Radio
-                            value={year}
-                            key={year}
-                            _checked={{ borderColor: "rgb(226, 232, 240)" }}
-
-                          >
+                          <Radio value={year} key={year}>
                             {year}
                           </Radio>
                         ))}
@@ -344,8 +323,7 @@ const ArticleList = ({ PostsData }) => {
                 </>
               </Heading>
             </WrapItem>
-
-            <WrapItem width={{ lg: "250px" }}>
+            <WrapItem width={{lg:"250px"}}>
               <Heading
                 as="h5"
                 textAlign="left"
@@ -364,16 +342,10 @@ const ArticleList = ({ PostsData }) => {
                   colorScheme="cyan"
                   onChange={setCurrentType}
                   value={currentType}
-                  ml={2}
                 >
                   <Stack spacing={4}>
-                    {articleTypesUnique.map((articleType, i) => (
-                      <Radio
-                        value={articleType}
-                        key={articleType}
-                        ref={el => (radioTypeRef.current[i] = el)}
-                        _checked={{ borderColor: "rgb(226, 232, 240)" }}
-                      >
+                    {articleTypesUnique.map(articleType => (
+                      <Radio value={articleType} key={articleType}>
                         {articleType}
                       </Radio>
                     ))}
@@ -381,7 +353,7 @@ const ArticleList = ({ PostsData }) => {
                 </RadioGroup>
               </Heading>
             </WrapItem>
-            <WrapItem width={{ lg: "250px" }}>
+            <WrapItem width={{lg:"250px"}}>
               <Heading
                 as="h5"
                 textAlign="left"
@@ -404,14 +376,13 @@ const ArticleList = ({ PostsData }) => {
                   colorScheme="cyan"
                   onChange={setCurrentPublisher}
                   value={currentPublisher}
-                  ml={2}
                 >
                   <Stack spacing={4}>
                     {articlePublisherUnique.map(articlePublisher => (
                       <Radio
                         value={articlePublisher}
                         key={articlePublisher}
-                        _checked={{ borderColor: "rgb(226, 232, 240)" }}
+                        isChecked
                       >
                         {articlePublisher}
                       </Radio>
